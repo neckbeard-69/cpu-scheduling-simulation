@@ -1,0 +1,105 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --primary: hsl(207, 78%, 54%);
+    --primary-content: hsl(0, 0%, 100%);
+    --primary-dark: hsl(207, 78%, 44%);
+    --primary-light: hsl(207, 78%, 64%);
+
+    --secondary: hsl(297, 78%, 54%);
+    --secondary-content: hsl(0, 0%, 100%);
+    --secondary-dark: hsl(297, 78%, 44%);
+    --secondary-light: hsl(297, 78%, 64%);
+
+    --background: hsl(208, 25%, 10%);
+    --foreground: hsl(208, 25%, 15%);
+    --border: hsl(208, 25%, 25%);
+
+    --copy: hsl(210, 25%, 98%);
+    --copy-light: hsl(205, 25%, 85%);
+    --copy-lighter: hsl(207, 25%, 65%);
+
+    --success: hsl(120, 58%, 54%);
+    --warning: hsl(60, 78%, 54%);
+    --error: hsl(0, 78%, 54%);
+    --success-content: hsl(120, 80%, 4%);
+    --warning-content: hsl(60, 80%, 4%);
+    --error-content: hsl(0, 0%, 100%);
+}
+
+body {
+    background-color: var(--background);
+    color: var(--copy);
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+}
+
+thead {
+    background-color: var(--primary-dark);
+}
+
+th,
+td {
+    padding: 4px 8px;
+    text-align: center;
+}
+
+td {
+    background-color: var(--border);
+}
+
+input {
+    background-color: var(--foreground);
+    border: none;
+    padding: 4px 8px;
+    color: var(--copy);
+}
+
+input::placeholder {
+    color: var(--copy-lighter);
+}
+
+div:has(table) {
+    width: fit-content;
+}
+
+.table-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn {
+    border: none;
+    padding: 5px 10px;
+    color: var(--copy);
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+.delete-btn {
+    background-color: var(--error);
+}
+
+.add-btn {
+    background-color: var(--success);
+    color: var(--foreground);
+}
+
+.submit-btn {
+    background-color: var(--primary-dark);
+}
