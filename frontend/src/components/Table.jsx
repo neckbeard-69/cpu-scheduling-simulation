@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import "../App.css";
+import Chart from "./Chart";
 import axios from "axios";
 
 const fields = {
@@ -14,16 +15,19 @@ const SERVER_URL = "http://localhost:8080";
 function ProcessForm({ algorithm, process, onProcessChange }) {
     return (
         <tr>
-            <td>{process["process-name"]}</td>
+            <td key={process["process-name"]}>{process["process-name"]}</td>
             {fields[algorithm].map((field) => (
                 <td key={field.id}>
                     <input
                         type={field.type}
                         placeholder={field.label}
                         value={process[field.id]}
-                        onChange={(e) =>
-                            onProcessChange(field.id, e.target.value)
-                        }
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === "" || !isNaN(value)) {
+                                onProcessChange(field.id, value, process.id);
+                            }
+                        }}
                     />
                 </td>
             ))}
@@ -33,15 +37,27 @@ function ProcessForm({ algorithm, process, onProcessChange }) {
 
 function Table({ algorithm }) {
     const [processes, setProcesses] = useState([]);
+    const [backupProcesses, setBackupProcesses] = useState([]);
     const processCountRef = useRef(0);
+    const [showChart, setShowChart] = useState(false);
+
+    function handleProcessChange(fieldId, value, processId) {
+        setProcesses((prevProcesses) =>
+            prevProcesses.map((process) =>
+                process.id === processId
+                    ? { ...process, [fieldId]: value }
+                    : process,
+            ),
+        );
+    }
 
     function addNewProcess() {
         const newProcess = {
             id: Date.now(),
             "process-number": processCountRef.current,
             "process-name": `P-${processCountRef.current + 1}`,
-            "arrival-time": 0, // default to numeric value
-            "burst-time": 0, // default to numeric value
+            "arrival-time": 0,
+            "burst-time": 0,
             "turnaround-time": 0,
             "remaining-time": 0,
             "start-time": 0,
@@ -53,14 +69,30 @@ function Table({ algorithm }) {
     }
 
     async function submitProcesses() {
+        const processedProcesses = processes.map((item) => {
+            for (const key in item) {
+                if (key === "process-name") continue;
+                item[key] = Number(item[key]);
+            }
+            return item;
+        });
+
         try {
-            const response = await axios.post(`${SERVER_URL}/send`, processes, {
-                headers: {
-                    "Content-Type": "application/json",
+            setBackupProcesses([...processes]);
+
+            const response = await axios.post(
+                `${SERVER_URL}/send`,
+                processedProcesses,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 },
-            });
+            );
 
             console.log("Received data: ", response.data);
+            setProcesses(response.data);
+            setShowChart(true);
         } catch (err) {
             console.error("Error:", err);
         }
@@ -73,47 +105,41 @@ function Table({ algorithm }) {
         }
     }
 
-    function handleProcessChange(processId, fieldId, value) {
-        setProcesses((prevProcesses) =>
-            prevProcesses.map((process) => {
-                if (process.id === processId) {
-                    if (fieldId !== "process-name") {
-                        value = parseInt(value, 10);
-                    }
-                    return {
-                        ...process,
-                        [fieldId]: value,
-                    };
-                }
-                return process;
-            }),
-        );
+    function goBackToTable() {
+        setProcesses(backupProcesses);
+        setShowChart(false);
     }
 
-    return (
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Process</th>
-                        {fields[algorithm].map((field) => (
-                            <th key={field.id}>{field.label}</th>
+    return !showChart ? (
+        <>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Process</th>
+                            {fields[algorithm].map((field) => (
+                                <th key={field.id}>{field.label}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {processes.map((process) => (
+                            <ProcessForm
+                                key={process.id}
+                                algorithm={algorithm}
+                                process={process}
+                                onProcessChange={(fieldId, value) =>
+                                    handleProcessChange(
+                                        fieldId,
+                                        value,
+                                        process.id,
+                                    )
+                                }
+                            />
                         ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {processes.map((process) => (
-                        <ProcessForm
-                            key={process.id}
-                            algorithm={algorithm}
-                            process={process}
-                            onProcessChange={(fieldId, value) =>
-                                handleProcessChange(process.id, fieldId, value)
-                            }
-                        />
-                    ))}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
             <div className="table-buttons">
                 <button onClick={addNewProcess} className="btn add-btn">
                     Add Process
@@ -125,7 +151,14 @@ function Table({ algorithm }) {
                     Submit all processes
                 </button>
             </div>
-        </div>
+        </>
+    ) : (
+        <>
+            <Chart processes={processes} />
+            <button className="btn submit-btn" onClick={goBackToTable}>
+                Go back
+            </button>
+        </>
     );
 }
 

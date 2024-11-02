@@ -43,6 +43,7 @@ body {
 
 thead {
     background-color: var(--primary-dark);
+    color: var(--copy);
 }
 
 th,
@@ -53,6 +54,7 @@ td {
 
 td {
     background-color: var(--border);
+    color: var(--copy);
 }
 
 input {
@@ -74,6 +76,12 @@ div:has(table) {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    position: absolute;
+    inset: 0;
+    height: 30px;
+    width: fit-content;
+    gap: 2rem;
+    margin-left: 2rem;
 }
 
 .btn {
@@ -102,4 +110,74 @@ div:has(table) {
 
 .submit-btn {
     background-color: var(--primary-dark);
+}
+
+
+.chart {
+    width: 800px;
+    border-left: 2px var(--copy) solid;
+    border-bottom: 2px var(--copy) solid;
+    height: 25vh;
+    display: flex;
+    align-items: end;
+    gap: 3px;
+    position: relative;
+
+    &::before {
+        content: "Time";
+        position: absolute;
+        left: -8%;
+        bottom: -5%;
+    }
+
+    &::after {
+        content: "0";
+        position: absolute;
+        bottom: -25px;
+    }
+
+    margin-bottom: 40px;
+
+
+    div {
+        height: 50px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+
+
+        &::before {
+            content: attr(data-start-time);
+            color: var(--copy);
+            position: absolute;
+            inset: 0;
+            top: 110%;
+            left: -2%;
+        }
+
+        &::after {
+            content: attr(data-finish-time);
+            color: var(--copy);
+            position: absolute;
+            inset: 0;
+            top: 110%;
+            left: 99%;
+
+        }
+    }
+}
+
+dialog {
+    background-color: var(--background);
+    border: none;
+    padding: 40px;
+    margin: auto;
+    z-index: 999;
+    border-radius: 5px;
+}
+
+::backdrop {
+    background-color: black;
+    opacity: 0.6;
 }

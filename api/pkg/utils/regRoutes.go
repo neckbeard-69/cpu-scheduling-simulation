@@ -6,5 +6,5 @@ import (
 )
 
 func RegisterRoutes(r *http.ServeMux) {
-	r.HandleFunc("/send", controllers.FetchProcesses)
+	r.HandleFunc("/send", controllers.SendProcesses)
 }
