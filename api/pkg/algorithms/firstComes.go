@@ -5,12 +5,13 @@ import (
 	"sort"
 )
 
-func FirstComesFirstServed(processes *[]models.FirstComesPro) {
+func FirstComesFirstServed(processes *[]models.FirstComes) {
 	// Sort processes by arrival time (and by process number in case of tie)
 	sort.SliceStable(*processes, func(i, j int) bool {
-		return (*processes)[i].ArrivalTime < (*processes)[j].ArrivalTime ||
-			((*processes)[i].ArrivalTime == (*processes)[j].ArrivalTime &&
-				(*processes)[i].ProcessNum < (*processes)[j].ProcessNum)
+		if (*processes)[i].ArrivalTime != (*processes)[j].ArrivalTime {
+			return (*processes)[i].ArrivalTime < (*processes)[j].ArrivalTime
+		}
+		return (*processes)[i].ProcessNum < (*processes)[j].ProcessNum
 	})
 
 	currentTime := 0
@@ -29,7 +30,7 @@ func FirstComesFirstServed(processes *[]models.FirstComesPro) {
 
 		// Calculate waiting and turnaround times
 		process.WaitingTime = process.StartTime - process.ArrivalTime
-		process.TurnaroundTime = process.FinishTime - process.ArrivalTime
+		process.TurnaroundTime = process.BurstTime + process.WaitingTime
 
 		// Move current time forward by the burst time
 		currentTime += process.BurstTime

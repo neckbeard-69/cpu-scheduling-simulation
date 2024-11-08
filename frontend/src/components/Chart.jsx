@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-export default function Chart({ processes }) {
+export default function Chart({ processes, algorithm }) {
     const tableHeadings = [
         "Process",
         "A.T",
@@ -45,6 +45,12 @@ export default function Chart({ processes }) {
         modalRef.current.close();
     };
 
+    // Find the last occurrence of each process
+    const lastOccurrences = processes.reduce((acc, process, index) => {
+        acc[process["process-name"]] = index;
+        return acc;
+    }, {});
+
     return (
         <>
             <button onClick={openDialog} className="btn add-btn">
@@ -54,23 +60,27 @@ export default function Chart({ processes }) {
                 <table>
                     <thead>
                         <tr>
-                            {tableHeadings.map((heading) => (
-                                <th key={heading}>{heading}</th>
-                            ))}
+                            {tableHeadings.map((heading) => {
+                                if (( heading === "Finish time" && algorithm === "sjf-preemtive") || (heading === "Start time") && algorithm === "sjf-preemtive") return
+                                return <th key={heading}>{heading}</th>
+                            }) 
+                            }
                         </tr>
                     </thead>
                     <tbody>
-                        {processes.map((process) => (
-                            <tr key={process["process-name"]}>
-                                <td>{process["process-name"]}</td>
-                                <td>{process["arrival-time"]}</td>
-                                <td>{process["burst-time"]}</td>
-                                <td>{process["start-time"]}</td>
-                                <td>{process["finish-time"]}</td>
-                                <td>{process["waiting-time"]}</td>
-                                <td>{process["turnaround-time"]}</td>
-                            </tr>
-                        ))}
+                        {processes
+                            .filter((process, index) => lastOccurrences[process["process-name"]] === index) // Filter to show only the last occurrence
+                            .map((process) => (
+                                <tr key={process["process-name"]}>
+                                    <td>{process["process-name"]}</td>
+                                    <td>{process["arrival-time"]}</td>
+                                    <td>{process["burst-time"]}</td>
+                                    {algorithm !== "sjf-preemtive" && <td>{process["start-time"]}</td> }
+                                    {algorithm !== "sjf-preemtive" && <td>{process["finish-time"]}</td> }
+                                    <td>{process["waiting-time"]}</td>
+                                    <td>{process["turnaround-time"]}</td>
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
                 <button
@@ -96,7 +106,7 @@ export default function Chart({ processes }) {
                     const { backgroundColor, color } =
                         getRandomBackgroundColor();
                     const burstWidth = totalFinishTime
-                        ? `${calculateWidth(totalFinishTime, item["burst-time"])}%`
+                        ? `${calculateWidth(totalFinishTime, item["finish-time"] - item["start-time"])}%`
                         : "0%";
                     const waitingWidth =
                         index !== processes.length - 1 &&

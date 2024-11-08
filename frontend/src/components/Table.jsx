@@ -8,11 +8,21 @@ const fields = {
         { id: "arrival-time", label: "Arrival time", type: "numeric" },
         { id: "burst-time", label: "Burst time", type: "numeric" },
     ],
+    "sjf-non-preemtive": [
+        { id: "arrival-time", label: "Arrival time", type: "numeric" },
+        { id: "burst-time", label: "Burst time", type: "numeric" },
+    ],
+    "sjf-preemtive": [
+        { id: "arrival-time", label: "Arrival time", type: "numeric" },
+        { id: "burst-time", label: "Burst time", type: "numeric" },
+    ],
 };
 
 const SERVER_URL = "http://localhost:8080";
 
+
 function ProcessForm({ algorithm, process, onProcessChange }) {
+    
     return (
         <tr>
             <td key={process["process-name"]}>{process["process-name"]}</td>
@@ -81,7 +91,7 @@ function Table({ algorithm }) {
             setBackupProcesses([...processes]);
 
             const response = await axios.post(
-                `${SERVER_URL}/send`,
+                `${SERVER_URL}/send?algorithm=${algorithm}`,
                 processedProcesses,
                 {
                     headers: {
@@ -89,9 +99,8 @@ function Table({ algorithm }) {
                     },
                 },
             );
-
-            console.log("Received data: ", response.data);
             setProcesses(response.data);
+            console.log(response.data);
             setShowChart(true);
         } catch (err) {
             console.error("Error:", err);
@@ -154,7 +163,7 @@ function Table({ algorithm }) {
         </>
     ) : (
         <>
-            <Chart processes={processes} />
+            <Chart processes={processes} algorithm={algorithm}/>
             <button className="btn submit-btn" onClick={goBackToTable}>
                 Go back
             </button>
