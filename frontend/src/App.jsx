@@ -6,6 +6,8 @@ const algorithms = [
     { value: "fcfs", text: "First Comes First Served" },
     { value: "sjf-non-preemtive", text: "Shortest Job First - non-preemtive" },
     { value: "sjf-preemtive", text: "Shortest Job First - preemtive" },
+    { value: "priority-non-preemtive", text: "Priority - non-preemtive" },
+    { value: "priority-preemtive", text: "Priority - preemtive" },
 ];
 function App() {
     const [algorithm, setAlgorithm] = useState("fcfs");
@@ -15,8 +17,8 @@ function App() {
     return (
         <>
             <div style={{ marginBottom: "10px" }}>
-                <label htmlFor="algo" style={{ marginRight: "5px" }}>
-                    Algorithm
+                <label htmlFor="algo" style={{ marginRight: "10px" }}>
+                    Algorithm:
                 </label>
                 <select
                     id="algo"

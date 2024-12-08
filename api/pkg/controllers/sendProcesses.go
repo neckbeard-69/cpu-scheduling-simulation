@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func newAlgorithmDataSlice(algorithm string) (interface{}, error) {
+func newAlgorithmDataArray(algorithm string) (interface{}, error) {
 	switch algorithm {
 	case "fcfs":
 		return &[]models.FirstComes{}, nil
@@ -17,6 +17,10 @@ func newAlgorithmDataSlice(algorithm string) (interface{}, error) {
 		return &[]models.ShortestJob{}, nil
 	case "sjf-preemtive":
 		return &[]models.ShortestJob{}, nil
+	case "priority-non-preemtive":
+		return &[]models.Priority{}, nil
+	case "priority-preemtive":
+		return &[]models.Priority{}, nil
 	default:
 		return nil, http.ErrNotSupported
 	}
@@ -30,7 +34,7 @@ func SendProcesses(w http.ResponseWriter, r *http.Request) {
 	}
 
 	algorithm := r.URL.Query().Get("algorithm")
-	data, err := newAlgorithmDataSlice(algorithm)
+	data, err := newAlgorithmDataArray(algorithm)
 	if err != nil {
 		http.Error(w, "Unsupported algorithm", http.StatusBadRequest)
 		return
@@ -49,6 +53,10 @@ func SendProcesses(w http.ResponseWriter, r *http.Request) {
 		algorithms.NonPreemptiveSJF(data.(*[]models.ShortestJob))
 	case "sjf-preemtive":
 		data = algorithms.ShortestJobFirstPreemptive(data.(*[]models.ShortestJob))
+	case "priority-non-preemtive":
+		algorithms.PriorityNonPreemtive(data.(*[]models.Priority))
+	case "priority-preemtive":
+		data = algorithms.PreemptivePriority(data.(*[]models.Priority))
 	}
 
 	log.Println(data)

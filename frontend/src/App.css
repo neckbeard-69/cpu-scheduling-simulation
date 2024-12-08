@@ -181,3 +181,13 @@ dialog {
     background-color: black;
     opacity: 0.6;
 }
+
+select {
+    background-color: var(--background);
+    border: 1px solid var(--copy-light);
+    color: var(--secondary-content);
+    border-radius: 5px;
+    padding: 4px 8px;
+    margin-left: 4px;
+    font-size: 1rem;
+}

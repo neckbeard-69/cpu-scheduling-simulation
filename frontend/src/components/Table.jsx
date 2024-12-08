@@ -3,6 +3,7 @@ import "../App.css";
 import Chart from "./Chart";
 import axios from "axios";
 
+
 const fields = {
     fcfs: [
         { id: "arrival-time", label: "Arrival time", type: "numeric" },
@@ -16,32 +17,43 @@ const fields = {
         { id: "arrival-time", label: "Arrival time", type: "numeric" },
         { id: "burst-time", label: "Burst time", type: "numeric" },
     ],
+    "priority-non-preemtive": [
+        { id: "arrival-time", label: "Arrival time", type: "numeric" },
+        { id: "burst-time", label: "Burst time", type: "numeric" },
+        { id: "priority", label: "Priority", type: "numeric" },
+    ],
+    "priority-preemtive": [
+        { id: "arrival-time", label: "Arrival time", type: "numeric" },
+        { id: "burst-time", label: "Burst time", type: "numeric" },
+        { id: "priority", label: "Priority", type: "numeric" },
+    ],
 };
 
 const SERVER_URL = "http://localhost:8080";
 
 
 function ProcessForm({ algorithm, process, onProcessChange }) {
-    
+
     return (
         <tr>
             <td key={process["process-name"]}>{process["process-name"]}</td>
             {fields[algorithm].map((field) => (
-                <td key={field.id}>
+                < td key={field.id} >
                     <input
                         type={field.type}
                         placeholder={field.label}
                         value={process[field.id]}
                         onChange={(e) => {
                             const value = e.target.value;
-                            if (value === "" || !isNaN(value)) {
+                            if (value === "" || !isNaN(value) || (field.id === "priority" && value === "-")) {
                                 onProcessChange(field.id, value, process.id);
                             }
                         }}
                     />
                 </td>
-            ))}
-        </tr>
+            ))
+            }
+        </tr >
     );
 }
 
@@ -73,6 +85,7 @@ function Table({ algorithm }) {
             "start-time": 0,
             "finish-time": 0,
             "waiting-time": 0,
+            "priority": 0,
         };
         setProcesses((prevProcesses) => [...prevProcesses, newProcess]);
         processCountRef.current++;
@@ -86,7 +99,7 @@ function Table({ algorithm }) {
             }
             return item;
         });
-
+        console.log(processedProcesses)
         try {
             setBackupProcesses([...processes]);
 
@@ -163,7 +176,7 @@ function Table({ algorithm }) {
         </>
     ) : (
         <>
-            <Chart processes={processes} algorithm={algorithm}/>
+            <Chart processes={processes} algorithm={algorithm} />
             <button className="btn submit-btn" onClick={goBackToTable}>
                 Go back
             </button>

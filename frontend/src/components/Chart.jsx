@@ -1,5 +1,30 @@
 import { useRef } from "react";
 
+function calcAvg(arr, type) {
+    console.log(arr);
+    let sum = 0;
+    switch (type) {
+        case "turnaround":
+            arr.forEach(val => {
+                sum += val["turnaround-time"];
+            })
+            break;
+        case "burst":
+            arr.forEach(val => {
+                sum += val["burst-time"];
+            })
+            break;
+        case "wait":
+            arr.forEach(val => {
+                sum += val["waiting-time"];
+            })
+            break;
+        default:
+            throw new Error("invalid type");
+    }
+
+    return (sum / arr.length).toFixed(2);
+}
 export default function Chart({ processes, algorithm }) {
     const tableHeadings = [
         "Process",
@@ -10,6 +35,8 @@ export default function Chart({ processes, algorithm }) {
         "Waiting time",
         "Turnaround time",
     ];
+    if (algorithm.includes("priority")) tableHeadings.push("Priority")
+
 
     const modalRef = useRef(null);
 
@@ -61,9 +88,9 @@ export default function Chart({ processes, algorithm }) {
                     <thead>
                         <tr>
                             {tableHeadings.map((heading) => {
-                                if (( heading === "Finish time" && algorithm === "sjf-preemtive") || (heading === "Start time") && algorithm === "sjf-preemtive") return
+                                if ((heading === "Finish time" && algorithm === "sjf-preemtive") || (heading === "Start time") && algorithm === "sjf-preemtive") return
                                 return <th key={heading}>{heading}</th>
-                            }) 
+                            })
                             }
                         </tr>
                     </thead>
@@ -75,12 +102,23 @@ export default function Chart({ processes, algorithm }) {
                                     <td>{process["process-name"]}</td>
                                     <td>{process["arrival-time"]}</td>
                                     <td>{process["burst-time"]}</td>
-                                    {algorithm !== "sjf-preemtive" && <td>{process["start-time"]}</td> }
-                                    {algorithm !== "sjf-preemtive" && <td>{process["finish-time"]}</td> }
+                                    {algorithm !== "sjf-preemtive" && <td>{process["start-time"]}</td>}
+                                    {algorithm !== "sjf-preemtive" && <td>{process["finish-time"]}</td>}
                                     <td>{process["waiting-time"]}</td>
                                     <td>{process["turnaround-time"]}</td>
+                                    {algorithm.includes("priority") &&
+                                        <td>{process["priority"]}</td>}
                                 </tr>
                             ))}
+                        <tr>
+                            <td colSpan="2"></td>
+                            <td style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "burst")}</td>
+                            <td colSpan="2"></td>
+                            <td style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "wait")}</td>
+                            <td style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "turnaround")}</td>
+                            {algorithm.includes("priority") &&
+                                <td></td>}
+                        </tr>
                     </tbody>
                 </table>
                 <button
@@ -110,7 +148,7 @@ export default function Chart({ processes, algorithm }) {
                         : "0%";
                     const waitingWidth =
                         index !== processes.length - 1 &&
-                        processes[index + 1]["start-time"] !==
+                            processes[index + 1]["start-time"] !==
                             item["finish-time"]
                             ? `${calculateWidth(totalFinishTime, processes[index + 1]["start-time"] - item["finish-time"])}%`
                             : "0%";

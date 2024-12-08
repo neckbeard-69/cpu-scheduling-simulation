@@ -5,7 +5,7 @@ import (
 	"sort"
 )
 
-func isDoneSJF(processes []models.ShortestJob) bool {
+func isDone(processes []models.Priority) bool {
 	for _, p := range processes {
 		if p.RemainingTime > 0 {
 			return false
@@ -14,30 +14,17 @@ func isDoneSJF(processes []models.ShortestJob) bool {
 	return true
 }
 
-func NonPreemptiveSJF(processes *[]models.ShortestJob) {
+func PriorityNonPreemtive(processes *[]models.Priority) {
+	sort.SliceStable(*processes, func(i, j int) bool {
+		if (*processes)[i].Priority != (*processes)[j].Priority {
+			return (*processes)[i].Priority < (*processes)[j].Priority
+		}
+		return (*processes)[i].ProcessNum > (*processes)[j].ProcessNum
+	})
+
 	currentTime := 0
 
 	for i := range *processes {
-		sort.SliceStable((*processes)[i:], func(a, b int) bool {
-			// Prioritize processes that have arrived by the current time
-			if (*processes)[i+a].ArrivalTime <= currentTime && (*processes)[i+b].ArrivalTime > currentTime {
-				return true
-			}
-			if (*processes)[i+a].ArrivalTime > currentTime && (*processes)[i+b].ArrivalTime <= currentTime {
-				return false
-			}
-			// If both processes have arrived, or both have not arrived, sort by burst time
-			if (*processes)[i+a].BurstTime != (*processes)[i+b].BurstTime {
-				return (*processes)[i+a].BurstTime < (*processes)[i+b].BurstTime
-			}
-			// If burst time is the same, sort by arrival time
-			if (*processes)[i+a].ArrivalTime != (*processes)[i+b].ArrivalTime {
-				return (*processes)[i+a].ArrivalTime < (*processes)[i+b].ArrivalTime
-			}
-			// If both burst time and arrival time are the same, sort by process number
-			return (*processes)[i+a].ProcessNum < (*processes)[i+b].ProcessNum
-		})
-
 		process := &(*processes)[i]
 
 		if currentTime < process.ArrivalTime {
@@ -51,24 +38,22 @@ func NonPreemptiveSJF(processes *[]models.ShortestJob) {
 		process.TurnaroundTime = process.BurstTime + process.WaitingTime
 
 		currentTime += process.BurstTime
-
-		process.RemainingTime = 0
 	}
 }
 
-func ShortestJobFirstPreemptive(processes *[]models.ShortestJob) []models.ShortestJob {
+func PreemptivePriority(processes *[]models.Priority) []models.Priority {
 	for i := range *processes {
 		(*processes)[i].RemainingTime = (*processes)[i].BurstTime
 	}
 
 	currentTime := 0
-	var executions []models.ShortestJob
-	var currentProcess *models.ShortestJob
+	var executions []models.Priority
+	var currentProcess *models.Priority
 
 	lastOccurrences := make(map[int]int)
 
-	for !isDoneSJF(*processes) {
-		availableProcesses := []*models.ShortestJob{}
+	for !isDone(*processes) {
+		availableProcesses := []*models.Priority{}
 		for i := range *processes {
 			if (*processes)[i].ArrivalTime <= currentTime && (*processes)[i].RemainingTime > 0 {
 				availableProcesses = append(availableProcesses, &(*processes)[i])
@@ -80,14 +65,19 @@ func ShortestJobFirstPreemptive(processes *[]models.ShortestJob) []models.Shorte
 			continue
 		}
 
+		// Sort available processes by priority / arrival time
 		sort.SliceStable(availableProcesses, func(a, b int) bool {
-			return availableProcesses[a].RemainingTime < availableProcesses[b].RemainingTime
+			if availableProcesses[a].Priority != availableProcesses[b].Priority {
+				return availableProcesses[a].Priority < availableProcesses[b].Priority
+			}
+			return availableProcesses[a].ArrivalTime < availableProcesses[b].ArrivalTime
 		})
 
 		nextProcess := availableProcesses[0]
 
 		if currentProcess != nextProcess {
 			if currentProcess != nil && currentProcess.RemainingTime > 0 {
+				// Record finish time for the current process before switching
 				currentProcess.FinishTime = currentTime
 				executions = append(executions, *currentProcess)
 			}

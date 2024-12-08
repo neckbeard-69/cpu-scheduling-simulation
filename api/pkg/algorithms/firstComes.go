@@ -6,7 +6,6 @@ import (
 )
 
 func FirstComesFirstServed(processes *[]models.FirstComes) {
-	// Sort processes by arrival time (and by process number in case of tie)
 	sort.SliceStable(*processes, func(i, j int) bool {
 		if (*processes)[i].ArrivalTime != (*processes)[j].ArrivalTime {
 			return (*processes)[i].ArrivalTime < (*processes)[j].ArrivalTime
@@ -19,20 +18,16 @@ func FirstComesFirstServed(processes *[]models.FirstComes) {
 	for i := range *processes {
 		process := &(*processes)[i]
 
-		// If the process arrives after the current time, move current time to arrival time
 		if currentTime < process.ArrivalTime {
 			currentTime = process.ArrivalTime
 		}
 
-		// Set start and finish times for the process
 		process.StartTime = currentTime
 		process.FinishTime = currentTime + process.BurstTime
 
-		// Calculate waiting and turnaround times
 		process.WaitingTime = process.StartTime - process.ArrivalTime
 		process.TurnaroundTime = process.BurstTime + process.WaitingTime
 
-		// Move current time forward by the burst time
 		currentTime += process.BurstTime
 	}
 }
