@@ -11,16 +11,17 @@ import {
 
 const algorithms = [
     { value: "fcfs", text: "First Comes First Served" },
-    { value: "sjf-non-preemtive", text: "Shortest Job First - non-preemtive" },
-    { value: "sjf-preemtive", text: "Shortest Job First - preemtive" },
-    { value: "priority-non-preemtive", text: "Priority - non-preemtive" },
-    { value: "priority-preemtive", text: "Priority - preemtive" },
+    { value: "sjf-non-preemtive", text: "Shortest Job First (non-preemtive)" },
+    { value: "sjf-preemtive", text: "Shortest Job First (preemtive)" },
+    { value: "priority-non-preemtive", text: "Priority (non-preemtive)" },
+    { value: "priority-preemtive", text: "Priority (preemtive)" },
 ];
 function App() {
     const [algorithm, setAlgorithm] = useState("fcfs");
+    const [isExecuted, setIsExecuted] = useState(false);
     return (
         <div className="flex flex-col gap-4 ">
-            <div className="flex items-center gap-3">
+            {!isExecuted && (<div className="flex items-center gap-3">
                 <label htmlFor="algo">
                     Algorithm:
                 </label>
@@ -30,7 +31,7 @@ function App() {
                     onValueChange={setAlgorithm}
                 >
                     <SelectTrigger className="w-[280px]">
-                        <SelectValue placeholder="Select algorithm" />
+                        <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                         {algorithms.map((item) => {
@@ -45,8 +46,8 @@ function App() {
                         })}
                     </SelectContent>
                 </Select>
-            </div>
-            <InputsTable algorithm={algorithm} />
+            </div>)}
+            <InputsTable algorithm={algorithm} setIsExecuted={setIsExecuted} />
         </div>
     );
 }

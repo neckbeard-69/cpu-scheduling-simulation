@@ -1,5 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import {
     Table,
     TableBody,
@@ -9,6 +15,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { InfoIcon } from "lucide-react";
 
 function calcAvg(arr, type) {
     let sum = 0;
@@ -48,7 +55,8 @@ export default function Chart({ processes, algorithm }) {
 
 
     const modalRef = useRef(null);
-
+    const [changeColors, setChangeColors] = useState(false);
+    const [isBlackWhite, setIsBlackWhite] = useState(false);
     function calculateWidth(totalTime, currentBurst) {
         return (currentBurst / totalTime) * 100;
     }
@@ -89,9 +97,37 @@ export default function Chart({ processes, algorithm }) {
 
     return (
         <>
-            <Button onClick={openDialog} className="font-semibold text-base max-w-fit mx-auto" >
-                Show Info
-            </Button>
+            <div className="flex gap-5 w-fit mx-auto items-center">
+                <Button onClick={openDialog} className="font-semibold text-base max-w-fit mx-auto" >
+                    Show Info
+                </Button>
+                <Button disabled={isBlackWhite} onClick={() => setChangeColors((prev) => !prev)} className="font-semibold text-base max-w-fit mx-auto" variant="outline">
+                    Change chart colors
+                </Button>
+                <HoverCard>
+                    <div className="items-top flex space-x-2">
+                        <Checkbox id="black-white" onCheckedChange={setIsBlackWhite} />
+                        <div className="grid gap-1.5 leading-none">
+                            <label
+                                htmlFor="black-white"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                                Monochrome
+                            </label>
+                        </div>
+                    </div>
+                    <HoverCardTrigger>
+                        <Button variant="icone" className="p-0 translate-x-[-13px]">
+                            <InfoIcon />
+                        </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                        <p className="text-base text-foreground">
+                            Sets a black background and white text for all executions
+                        </p>
+                    </HoverCardContent>
+                </HoverCard>
+            </div >
             <dialog ref={modalRef} className="w-auto m-4 rounded-lg p-4">
                 <Table className='text-center text-lg'>
                     <TableHeader>
@@ -140,17 +176,18 @@ export default function Chart({ processes, algorithm }) {
             <div className="chart">
                 {initialWaitingWidth > 0 && (
                     <div
+                        className="bg-black/10 font-semibold"
                         style={{
                             width: `${initialWaitingWidth}%`,
-                            backgroundColor: "transparent",
                         }}
                     >
                         <span>Waiting</span>
                     </div>
                 )}
                 {processes.map((item, index) => {
-                    const { backgroundColor, color } =
-                        getRandomBackgroundColor();
+                    const { backgroundColor, color } = isBlackWhite
+                        ? { backgroundColor: "black", color: "white" }
+                        : getRandomBackgroundColor();
                     const burstWidth = totalFinishTime
                         ? `${calculateWidth(totalFinishTime, item["finish-time"] - item["start-time"])}%`
                         : "0%";
@@ -181,6 +218,7 @@ export default function Chart({ processes, algorithm }) {
                             </div>
                             {waitingWidth !== "0%" && (
                                 <div
+                                    className="bg-black/10 font-semibold"
                                     style={{
                                         width: waitingWidth,
                                     }}

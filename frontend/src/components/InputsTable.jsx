@@ -2,7 +2,17 @@ import { useRef, useState } from "react";
 import "../App.css";
 import Chart from "./Chart";
 import axios from "axios";
-
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,6 +25,29 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
+function ConfirmDialog({ showText, content, showBtnVariant, confirmText, confirmVariant, confirmEventHandler, isDisabled }) {
+    return (
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button disabled={isDisabled} variant={showBtnVariant} className="text-base font-semibold">{showText}</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle className="text-2xl font-extrabold text-black/85">Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription className="text-base text-black/60 font-semibold">
+                        {content}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="bg-transparent hover:bg-transparent w-fit p-0">
+                        <Button variant={confirmVariant} onClick={confirmEventHandler} className="text-base font-semibold ml-2">{confirmText}</Button>
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    )
+}
 const fields = {
     fcfs: [
         { id: "arrival-time", label: "Arrival time", type: "numeric" },
@@ -68,11 +101,11 @@ function ProcessForm({ algorithm, process, onProcessChange }) {
     );
 }
 
-function InputsTable({ algorithm }) {
+function InputsTable({ algorithm, setIsExecuted }) {
     const [processes, setProcesses] = useState([]);
     const [backupProcesses, setBackupProcesses] = useState([]);
     const processCountRef = useRef(0);
-    const [showChart, setShowChart] = useState(false);
+    const [isChartShown, setIsChartShown] = useState(false);
 
     function handleProcessChange(fieldId, value, processId) {
         setProcesses((prevProcesses) =>
@@ -125,7 +158,8 @@ function InputsTable({ algorithm }) {
             );
             setProcesses(response.data);
             console.log(response.data);
-            setShowChart(true);
+            setIsChartShown(true);
+            setIsExecuted(true);
         } catch (err) {
             console.error("Error:", err);
         }
@@ -137,24 +171,32 @@ function InputsTable({ algorithm }) {
             processCountRef.current--;
         }
     }
+    function clearAllProcesses() {
+        setProcesses([]);
+        processCountRef.current = 0;
+    }
 
     function goBackToTable() {
         setProcesses(backupProcesses);
-        setShowChart(false);
+        setIsChartShown(false);
+        setIsExecuted(false);
     }
-
-    return !showChart ? (
+    return !isChartShown ? (
         <>
             <div>
                 <div className="mb-2 flex gap-4">
                     <Button variant='outline' onClick={addNewProcess} className="text-base font-semibold">
-                        Add Process
+                        Add a process
                     </Button>
-                    <Button variant='destructive' onClick={deleteProcess} className="text-base font-semibold">
-                        Delete last process
+                    <Button variant='destructive' onClick={deleteProcess} className="text-base font-semibold" disabled={processes.length === 0}>
+                        Delete the last process
                     </Button>
-                    <Button onClick={submitProcesses} className="text-base font-semibold">
-                        Submit all processes
+                    <ConfirmDialog showBtnVariant="destructive" showText="Clear all processes" confirmVariant="destructive" confirmEventHandler={clearAllProcesses}
+                        content="Are you sure that you wanna clear all processes"
+                        confirmText="Clear all processes" isDisabled={processes.length === 0}
+                    />
+                    <Button onClick={submitProcesses} className="text-base font-semibold" disabled={processes.length === 0}>
+                        Execute
                     </Button>
                 </div >
                 <Table>
