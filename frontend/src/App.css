@@ -6,72 +6,72 @@
     margin: 0;
 }
 
-:root {
-    --primary: hsl(207, 78%, 54%);
-    --primary-content: hsl(0, 0%, 100%);
-    --primary-dark: hsl(207, 78%, 44%);
-    --primary-light: hsl(207, 78%, 64%);
+/*:root {*/
+/*    --primary: hsl(207, 78%, 54%);*/
+/*    --primary-content: hsl(0, 0%, 100%);*/
+/*    --primary-dark: hsl(207, 78%, 44%);*/
+/*    --primary-light: hsl(207, 78%, 64%);*/
+/**/
+/*    --secondary: hsl(297, 78%, 54%);*/
+/*    --secondary-content: hsl(0, 0%, 100%);*/
+/*    --secondary-dark: hsl(297, 78%, 44%);*/
+/*    --secondary-light: hsl(297, 78%, 64%);*/
+/**/
+/*    --background: hsl(208, 25%, 10%);*/
+/*    --foreground: hsl(208, 25%, 15%);*/
+/*    --border: hsl(208, 25%, 25%);*/
+/**/
+/*    --copy: hsl(210, 25%, 98%);*/
+/*    --copy-light: hsl(205, 25%, 85%);*/
+/*    --copy-lighter: hsl(207, 25%, 65%);*/
+/**/
+/*    --success: hsl(120, 58%, 54%);*/
+/*    --warning: hsl(60, 78%, 54%);*/
+/*    --error: hsl(0, 78%, 54%);*/
+/*    --success-content: hsl(120, 80%, 4%);*/
+/*    --warning-content: hsl(60, 80%, 4%);*/
+/*    --error-content: hsl(0, 0%, 100%);*/
+/*}*/
 
-    --secondary: hsl(297, 78%, 54%);
-    --secondary-content: hsl(0, 0%, 100%);
-    --secondary-dark: hsl(297, 78%, 44%);
-    --secondary-light: hsl(297, 78%, 64%);
+/*body {*/
+/*    background-color: var(--background);*/
+/*    color: var(--copy);*/
+/*    display: grid;*/
+/*    place-items: center;*/
+/*    min-height: 100vh;*/
+/*}*/
+/**/
+/*thead {*/
+/*    background-color: var(--primary-dark);*/
+/*    color: var(--copy);*/
+/*}*/
 
-    --background: hsl(208, 25%, 10%);
-    --foreground: hsl(208, 25%, 15%);
-    --border: hsl(208, 25%, 25%);
+/*th,*/
+/*td {*/
+/*    padding: 4px 8px;*/
+/*    text-align: center;*/
+/*}*/
+/**/
+/*td {*/
+/*    background-color: var(--border);*/
+/*    color: var(--copy);*/
+/*}*/
+/**/
+/*input {*/
+/*    background-color: var(--foreground);*/
+/*    border: none;*/
+/*    padding: 4px 8px;*/
+/*    color: var(--copy);*/
+/*}*/
 
-    --copy: hsl(210, 25%, 98%);
-    --copy-light: hsl(205, 25%, 85%);
-    --copy-lighter: hsl(207, 25%, 65%);
-
-    --success: hsl(120, 58%, 54%);
-    --warning: hsl(60, 78%, 54%);
-    --error: hsl(0, 78%, 54%);
-    --success-content: hsl(120, 80%, 4%);
-    --warning-content: hsl(60, 80%, 4%);
-    --error-content: hsl(0, 0%, 100%);
-}
-
-body {
-    background-color: var(--background);
-    color: var(--copy);
-    display: grid;
-    place-items: center;
-    min-height: 100vh;
-}
-
-thead {
-    background-color: var(--primary-dark);
-    color: var(--copy);
-}
-
-th,
-td {
-    padding: 4px 8px;
-    text-align: center;
-}
-
-td {
-    background-color: var(--border);
-    color: var(--copy);
-}
-
-input {
-    background-color: var(--foreground);
-    border: none;
-    padding: 4px 8px;
-    color: var(--copy);
-}
-
-input::placeholder {
-    color: var(--copy-lighter);
-}
-
-div:has(table) {
-    width: fit-content;
-}
-
+/*input::placeholder {*/
+/*    color: var(--copy-lighter);*/
+/*}*/
+/**/
+/*div:has(table) {*/
+/*    width: fit-content;*/
+/*}*/
+/**/
 .table-buttons {
     display: flex;
     justify-content: space-between;
@@ -84,39 +84,39 @@ div:has(table) {
     margin-left: 2rem;
 }
 
-.btn {
-    border: none;
-    padding: 5px 10px;
-    color: var(--copy);
-    font-weight: 600;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-
-    &:hover {
-        opacity: 0.9;
-    }
-}
-
-.delete-btn {
-    background-color: var(--error);
-}
-
-.add-btn {
-    background-color: var(--success);
-    color: var(--foreground);
-}
-
-.submit-btn {
-    background-color: var(--primary-dark);
-}
-
-
+/*.btn {*/
+/*    border: none;*/
+/*    padding: 5px 10px;*/
+/*    color: var(--copy);*/
+/*    font-weight: 600;*/
+/*    font-size: 16px;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*    transition: opacity 0.2s;*/
+/**/
+/*    &:hover {*/
+/*        opacity: 0.9;*/
+/*    }*/
+/*}*/
+/**/
+/*.delete-btn {*/
+/*    background-color: var(--error);*/
+/*}*/
+/**/
+/*.add-btn {*/
+/*    background-color: var(--success);*/
+/*    color: var(--foreground);*/
+/*}*/
+/**/
+/*.submit-btn {*/
+/*    background-color: var(--primary-dark);*/
+/*}*/
+/**/
+/**/
 .chart {
     width: 800px;
-    border-left: 2px var(--copy) solid;
-    border-bottom: 2px var(--copy) solid;
+    border-left: 2px white solid;
+    border-bottom: 2px white solid;
     height: 25vh;
     display: flex;
     align-items: end;
@@ -133,7 +133,8 @@ div:has(table) {
     &::after {
         content: "0";
         position: absolute;
-        bottom: -25px;
+        bottom: -31px;
+        font-weight: 700;
     }
 
     margin-bottom: 40px;
@@ -149,7 +150,7 @@ div:has(table) {
 
         &::before {
             content: attr(data-start-time);
-            color: var(--copy);
+            color: black;
             position: absolute;
             inset: 0;
             top: 110%;
@@ -158,7 +159,7 @@ div:has(table) {
 
         &::after {
             content: attr(data-finish-time);
-            color: var(--copy);
+            color: black;
             position: absolute;
             inset: 0;
             top: 110%;
@@ -168,26 +169,18 @@ div:has(table) {
     }
 }
 
-dialog {
-    background-color: var(--background);
-    border: none;
-    padding: 40px;
-    margin: auto;
-    z-index: 999;
-    border-radius: 5px;
-}
 
 ::backdrop {
     background-color: black;
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
-select {
-    background-color: var(--background);
-    border: 1px solid var(--copy-light);
-    color: var(--secondary-content);
-    border-radius: 5px;
-    padding: 4px 8px;
-    margin-left: 4px;
-    font-size: 1rem;
-}
+/*select {*/
+/*    background-color: var(--background);*/
+/*    border: 1px solid var(--copy-light);*/
+/*    color: var(--secondary-content);*/
+/*    border-radius: 5px;*/
+/*    padding: 4px 8px;*/
+/*    margin-left: 4px;*/
+/*    font-size: 1rem;*/
+/*}*/

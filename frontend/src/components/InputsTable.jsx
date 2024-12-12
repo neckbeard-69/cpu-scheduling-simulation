@@ -3,6 +3,17 @@ import "../App.css";
 import Chart from "./Chart";
 import axios from "axios";
 
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 
 const fields = {
     fcfs: [
@@ -35,11 +46,11 @@ const SERVER_URL = "http://localhost:8080";
 function ProcessForm({ algorithm, process, onProcessChange }) {
 
     return (
-        <tr>
-            <td key={process["process-name"]}>{process["process-name"]}</td>
+        <TableRow>
+            <TableCell key={process["process-name"]}>{process["process-name"]}</TableCell>
             {fields[algorithm].map((field) => (
-                < td key={field.id} >
-                    <input
+                < TableCell key={field.id} >
+                    <Input
                         type={field.type}
                         placeholder={field.label}
                         value={process[field.id]}
@@ -50,14 +61,14 @@ function ProcessForm({ algorithm, process, onProcessChange }) {
                             }
                         }}
                     />
-                </td>
+                </TableCell>
             ))
             }
-        </tr >
+        </TableRow >
     );
 }
 
-function Table({ algorithm }) {
+function InputsTable({ algorithm }) {
     const [processes, setProcesses] = useState([]);
     const [backupProcesses, setBackupProcesses] = useState([]);
     const processCountRef = useRef(0);
@@ -135,16 +146,27 @@ function Table({ algorithm }) {
     return !showChart ? (
         <>
             <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Process</th>
+                <div className="mb-2 flex gap-4">
+                    <Button variant='outline' onClick={addNewProcess} className="text-base font-semibold">
+                        Add Process
+                    </Button>
+                    <Button variant='destructive' onClick={deleteProcess} className="text-base font-semibold">
+                        Delete last process
+                    </Button>
+                    <Button onClick={submitProcesses} className="text-base font-semibold">
+                        Submit all processes
+                    </Button>
+                </div >
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Process</TableHead>
                             {fields[algorithm].map((field) => (
-                                <th key={field.id}>{field.label}</th>
+                                <TableHead key={field.id}>{field.label}</TableHead>
                             ))}
-                        </tr>
-                    </thead>
-                    <tbody>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
                         {processes.map((process) => (
                             <ProcessForm
                                 key={process.id}
@@ -159,29 +181,18 @@ function Table({ algorithm }) {
                                 }
                             />
                         ))}
-                    </tbody>
-                </table>
-            </div>
-            <div className="table-buttons">
-                <button onClick={addNewProcess} className="btn add-btn">
-                    Add Process
-                </button>
-                <button onClick={deleteProcess} className="btn delete-btn">
-                    Delete last process
-                </button>
-                <button className="btn submit-btn" onClick={submitProcesses}>
-                    Submit all processes
-                </button>
+                    </TableBody>
+                </Table>
             </div>
         </>
     ) : (
         <>
             <Chart processes={processes} algorithm={algorithm} />
-            <button className="btn submit-btn" onClick={goBackToTable}>
+            <Button variant="destructive" className='font-semibold text-base max-w-fit mx-auto' onClick={goBackToTable}>
                 Go back
-            </button>
+            </Button>
         </>
     );
 }
 
-export default Table;
+export default InputsTable;

@@ -19,22 +19,18 @@ func NonPreemptiveSJF(processes *[]models.ShortestJob) {
 
 	for i := range *processes {
 		sort.SliceStable((*processes)[i:], func(a, b int) bool {
-			// Prioritize processes that have arrived by the current time
 			if (*processes)[i+a].ArrivalTime <= currentTime && (*processes)[i+b].ArrivalTime > currentTime {
 				return true
 			}
 			if (*processes)[i+a].ArrivalTime > currentTime && (*processes)[i+b].ArrivalTime <= currentTime {
 				return false
 			}
-			// If both processes have arrived, or both have not arrived, sort by burst time
 			if (*processes)[i+a].BurstTime != (*processes)[i+b].BurstTime {
 				return (*processes)[i+a].BurstTime < (*processes)[i+b].BurstTime
 			}
-			// If burst time is the same, sort by arrival time
 			if (*processes)[i+a].ArrivalTime != (*processes)[i+b].ArrivalTime {
 				return (*processes)[i+a].ArrivalTime < (*processes)[i+b].ArrivalTime
 			}
-			// If both burst time and arrival time are the same, sort by process number
 			return (*processes)[i+a].ProcessNum < (*processes)[i+b].ProcessNum
 		})
 

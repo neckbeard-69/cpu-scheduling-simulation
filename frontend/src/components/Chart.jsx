@@ -1,7 +1,16 @@
 import { useRef } from "react";
+import { Button } from "@/components/ui/button"
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 
 function calcAvg(arr, type) {
-    console.log(arr);
     let sum = 0;
     switch (type) {
         case "turnaround":
@@ -80,54 +89,54 @@ export default function Chart({ processes, algorithm }) {
 
     return (
         <>
-            <button onClick={openDialog} className="btn add-btn">
+            <Button onClick={openDialog} className="font-semibold text-base max-w-fit mx-auto" >
                 Show Info
-            </button>
-            <dialog ref={modalRef}>
-                <table>
-                    <thead>
-                        <tr>
+            </Button>
+            <dialog ref={modalRef} className="w-auto m-4 rounded-lg p-4">
+                <Table className='text-center text-lg'>
+                    <TableHeader>
+                        <TableRow>
                             {tableHeadings.map((heading) => {
                                 if ((heading === "Finish time" && algorithm === "sjf-preemtive") || (heading === "Start time") && algorithm === "sjf-preemtive") return
                                 return <th key={heading}>{heading}</th>
                             })
                             }
-                        </tr>
-                    </thead>
-                    <tbody>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
                         {processes
                             .filter((process, index) => lastOccurrences[process["process-name"]] === index) // Filter to show only the last occurrence
                             .map((process) => (
-                                <tr key={process["process-name"]}>
-                                    <td>{process["process-name"]}</td>
-                                    <td>{process["arrival-time"]}</td>
-                                    <td>{process["burst-time"]}</td>
-                                    {algorithm !== "sjf-preemtive" && <td>{process["start-time"]}</td>}
-                                    {algorithm !== "sjf-preemtive" && <td>{process["finish-time"]}</td>}
-                                    <td>{process["waiting-time"]}</td>
-                                    <td>{process["turnaround-time"]}</td>
+                                <TableRow key={process["process-name"]}>
+                                    <TableCell >{process["process-name"]}</TableCell>
+                                    <TableCell>{process["arrival-time"]}</TableCell>
+                                    <TableCell>{process["burst-time"]}</TableCell>
+                                    {algorithm !== "sjf-preemtive" && <TableCell>{process["start-time"]}</TableCell>}
+                                    {algorithm !== "sjf-preemtive" && <TableCell>{process["finish-time"]}</TableCell>}
+                                    <TableCell>{process["waiting-time"]}</TableCell>
+                                    <TableCell>{process["turnaround-time"]}</TableCell>
                                     {algorithm.includes("priority") &&
-                                        <td>{process["priority"]}</td>}
-                                </tr>
+                                        <TableCell>{process["priority"]}</TableCell>}
+                                </TableRow>
                             ))}
-                        <tr>
-                            <td colSpan="2"></td>
-                            <td style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "burst")}</td>
-                            <td colSpan="2"></td>
-                            <td style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "wait")}</td>
-                            <td style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "turnaround")}</td>
+                        <TableRow>
+                            <TableCell colSpan="2"></TableCell>
+                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "burst")}</TableCell>
+                            <TableCell colSpan="2"></TableCell>
+                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "wait")}</TableCell>
+                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "turnaround")}</TableCell>
                             {algorithm.includes("priority") &&
-                                <td></td>}
-                        </tr>
-                    </tbody>
-                </table>
-                <button
+                                <TableCell></TableCell>}
+                        </TableRow>
+                    </TableBody>
+                </Table>
+                <Button
+                    variant='destructive'
                     onClick={closeDialog}
-                    className="btn delete-btn"
-                    style={{ marginTop: "10px" }}
+                    className="font-semibold text-base"
                 >
                     Close
-                </button>
+                </Button>
             </dialog>
             <div className="chart">
                 {initialWaitingWidth > 0 && (
@@ -156,6 +165,7 @@ export default function Chart({ processes, algorithm }) {
                     return (
                         <>
                             <div
+                                className="font-bold text-lg"
                                 style={{
                                     width: burstWidth,
                                     backgroundColor,
@@ -172,6 +182,7 @@ export default function Chart({ processes, algorithm }) {
                             </div>
                             {waitingWidth !== "0%" && (
                                 <div
+                                    className="font-bold text-lg"
                                     style={{
                                         width: waitingWidth,
                                         backgroundColor: "transparent",

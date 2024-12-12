@@ -1,6 +1,13 @@
 import { useState } from "react";
 import "./App.css";
-import Table from "./components/Table";
+import InputsTable from "./components/InputsTable";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 const algorithms = [
     { value: "fcfs", text: "First Comes First Served" },
@@ -11,34 +18,36 @@ const algorithms = [
 ];
 function App() {
     const [algorithm, setAlgorithm] = useState("fcfs");
-    function handleAlgoChange(e) {
-        setAlgorithm(() => e.target.value);
-    }
     return (
-        <>
-            <div style={{ marginBottom: "10px" }}>
-                <label htmlFor="algo" style={{ marginRight: "10px" }}>
+        <div className="flex flex-col gap-4 ">
+            <div className="flex items-center gap-3">
+                <label htmlFor="algo">
                     Algorithm:
                 </label>
-                <select
+                <Select
                     id="algo"
                     value={algorithm}
-                    onChange={(e) => handleAlgoChange(e)}
+                    onValueChange={setAlgorithm}
                 >
-                    {algorithms.map((item) => {
-                        return (
-                            <option
-                                key={item.text + item.value}
-                                value={item.value}
-                            >
-                                {item.text}
-                            </option>
-                        );
-                    })}
-                </select>
+                    <SelectTrigger className="w-[280px]">
+                        <SelectValue placeholder="Select algorithm" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {algorithms.map((item) => {
+                            return (
+                                <SelectItem
+                                    key={item.text + item.value}
+                                    value={item.value}
+                                >
+                                    {item.text}
+                                </SelectItem>
+                            );
+                        })}
+                    </SelectContent>
+                </Select>
             </div>
-            <Table algorithm={algorithm} />
-        </>
+            <InputsTable algorithm={algorithm} />
+        </div>
     );
 }
 
