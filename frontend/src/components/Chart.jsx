@@ -97,7 +97,6 @@ export default function Chart({ processes, algorithm }) {
                     <TableHeader>
                         <TableRow>
                             {tableHeadings.map((heading) => {
-                                if ((heading === "Finish time" && algorithm === "sjf-preemtive") || (heading === "Start time") && algorithm === "sjf-preemtive") return
                                 return <th key={heading}>{heading}</th>
                             })
                             }
@@ -111,8 +110,8 @@ export default function Chart({ processes, algorithm }) {
                                     <TableCell >{process["process-name"]}</TableCell>
                                     <TableCell>{process["arrival-time"]}</TableCell>
                                     <TableCell>{process["burst-time"]}</TableCell>
-                                    {algorithm !== "sjf-preemtive" && <TableCell>{process["start-time"]}</TableCell>}
-                                    {algorithm !== "sjf-preemtive" && <TableCell>{process["finish-time"]}</TableCell>}
+                                    <TableCell> {algorithm !== "sjf-preemtive" ? process["start-time"] : ""}</TableCell>
+                                    <TableCell> {algorithm !== "sjf-preemtive" ? process["finish-time"] : ""}</TableCell>
                                     <TableCell>{process["waiting-time"]}</TableCell>
                                     <TableCell>{process["turnaround-time"]}</TableCell>
                                     {algorithm.includes("priority") &&
@@ -182,10 +181,8 @@ export default function Chart({ processes, algorithm }) {
                             </div>
                             {waitingWidth !== "0%" && (
                                 <div
-                                    className="font-bold text-lg"
                                     style={{
                                         width: waitingWidth,
-                                        backgroundColor: "transparent",
                                     }}
                                     data-finish-time={
                                         processes[index + 1]["start-time"]
