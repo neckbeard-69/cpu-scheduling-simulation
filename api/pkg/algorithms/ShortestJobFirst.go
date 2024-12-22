@@ -87,9 +87,7 @@ func ShortestJobFirstPreemptive(processes *[]models.ShortestJob) []models.Shorte
 				currentProcess.FinishTime = currentTime
 				executions = append(executions, *currentProcess)
 			}
-			if nextProcess.RemainingTime == nextProcess.BurstTime {
-				nextProcess.StartTime = currentTime
-			}
+			nextProcess.StartTime = currentTime
 			currentProcess = nextProcess
 		}
 
@@ -114,6 +112,5 @@ func ShortestJobFirstPreemptive(processes *[]models.ShortestJob) []models.Shorte
 			}
 		}
 	}
-
 	return executions
 }

@@ -81,9 +81,7 @@ func PreemptivePriority(processes *[]models.Priority) []models.Priority {
 				currentProcess.FinishTime = currentTime
 				executions = append(executions, *currentProcess)
 			}
-			if nextProcess.RemainingTime == nextProcess.BurstTime {
-				nextProcess.StartTime = currentTime
-			}
+			nextProcess.StartTime = currentTime
 			currentProcess = nextProcess
 		}
 

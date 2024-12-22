@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/table"
 import { InfoIcon } from "lucide-react";
 
-function calcAvg(arr, type) {
+function calcAvg(arr, type, numProcesses) {
     let sum = 0;
     switch (type) {
         case "turnaround":
@@ -39,9 +39,9 @@ function calcAvg(arr, type) {
             throw new Error("invalid type");
     }
 
-    return (sum / arr.length).toFixed(2);
+    return sum / numProcesses;
 }
-export default function Chart({ processes, algorithm }) {
+export default function Chart({ processes, algorithm, numProcesses }) {
     const tableHeadings = [
         "Process",
         "A.T",
@@ -156,10 +156,10 @@ export default function Chart({ processes, algorithm }) {
                             ))}
                         <TableRow>
                             <TableCell colSpan="2"></TableCell>
-                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "burst")}</TableCell>
+                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "burst", numProcesses)}</TableCell>
                             <TableCell colSpan="2"></TableCell>
-                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "wait")}</TableCell>
-                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "turnaround")}</TableCell>
+                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "wait", numProcesses)}</TableCell>
+                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "turnaround", numProcesses)}</TableCell>
                             {algorithm.includes("priority") &&
                                 <TableCell></TableCell>}
                         </TableRow>

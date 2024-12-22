@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button"
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -229,7 +228,7 @@ function InputsTable({ algorithm, setIsExecuted }) {
         </>
     ) : (
         <>
-            <Chart processes={processes} algorithm={algorithm} />
+            <Chart processes={processes} algorithm={algorithm} numProcesses={processCountRef.current} />
             <Button variant="destructive" className='font-semibold text-base max-w-fit mx-auto' onClick={goBackToTable}>
                 Go back
             </Button>
