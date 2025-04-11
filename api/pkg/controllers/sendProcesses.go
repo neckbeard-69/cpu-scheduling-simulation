@@ -7,9 +7,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 )
 
-func newAlgorithmDataArray(algorithm string) (interface{}, error) {
+func newAlgorithmDataArray(algorithm string) (any, error) {
 	switch algorithm {
 	case "fcfs":
 		return &[]models.FirstComes{}, nil
@@ -21,6 +22,8 @@ func newAlgorithmDataArray(algorithm string) (interface{}, error) {
 		return &[]models.Priority{}, nil
 	case "priority-preemtive":
 		return &[]models.Priority{}, nil
+	case "round-robin":
+		return &[]models.RoundRobin{}, nil
 	default:
 		return nil, http.ErrNotSupported
 	}
@@ -36,6 +39,7 @@ func SendProcesses(w http.ResponseWriter, r *http.Request) {
 	algorithm := r.URL.Query().Get("algorithm")
 	data, err := newAlgorithmDataArray(algorithm)
 	if err != nil {
+		log.Printf("algo: %s", algorithm)
 		http.Error(w, "Unsupported algorithm", http.StatusBadRequest)
 		return
 	}
@@ -57,6 +61,14 @@ func SendProcesses(w http.ResponseWriter, r *http.Request) {
 		algorithms.PriorityNonPreemtive(data.(*[]models.Priority))
 	case "priority-preemtive":
 		data = algorithms.PreemptivePriority(data.(*[]models.Priority))
+	case "round-robin":
+		timeQuantum := r.URL.Query().Get("time-quantum")
+		timeQuantumNum, err := strconv.Atoi(timeQuantum)
+		if err != nil {
+			log.Printf("Time quantum is invalid or not sent: %v", err)
+			http.Error(w, "Time quantum is invalid", http.StatusBadRequest)
+		}
+		data = algorithms.RoundRobin(data.(*[]models.RoundRobin), timeQuantumNum)
 	}
 
 	log.Println(data)

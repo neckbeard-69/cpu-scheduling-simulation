@@ -70,37 +70,42 @@ const fields = {
         { id: "burst-time", label: "Burst time", type: "numeric" },
         { id: "priority", label: "Priority", type: "numeric" },
     ],
+    "round-robin": [
+        { id: "arrival-time", label: "Arrival time", type: "numeric" },
+        { id: "burst-time", label: "Burst time", type: "numeric" },
+    ],
 };
 
 const SERVER_URL = "http://localhost:8080";
 
 
 function ProcessForm({ algorithm, process, onProcessChange }) {
-
     return (
-        <TableRow>
-            <TableCell key={process["process-name"]}>{process["process-name"]}</TableCell>
-            {fields[algorithm].map((field) => (
-                < TableCell key={field.id} >
-                    <Input
-                        type={field.type}
-                        placeholder={field.label}
-                        value={process[field.id]}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === "" || !isNaN(value) || (field.id === "priority" && value === "-")) {
-                                onProcessChange(field.id, value, process.id);
-                            }
-                        }}
-                    />
-                </TableCell>
-            ))
-            }
-        </TableRow >
+        <>
+            <TableRow>
+                <TableCell key={process["process-name"]}>{process["process-name"]}</TableCell>
+                {fields[algorithm].map((field) => (
+                    < TableCell key={field.id} >
+                        <Input
+                            type={field.type}
+                            placeholder={field.label}
+                            value={process[field.id]}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === "" || !isNaN(value) || (field.id === "priority" && value === "-")) {
+                                    onProcessChange(field.id, value, process.id);
+                                }
+                            }}
+                        />
+                    </TableCell>
+                ))
+                }
+            </TableRow >
+        </>
     );
 }
 
-function InputsTable({ algorithm, setIsExecuted }) {
+function InputsTable({ algorithm, setIsExecuted, timeQuantum }) {
     const [processes, setProcesses] = useState([]);
     const [backupProcesses, setBackupProcesses] = useState([]);
     const processCountRef = useRef(0);
@@ -147,7 +152,7 @@ function InputsTable({ algorithm, setIsExecuted }) {
             setBackupProcesses([...processes]);
 
             const response = await axios.post(
-                `${SERVER_URL}/send?algorithm=${algorithm}`,
+                `${SERVER_URL}/send?algorithm=${algorithm}&time-quantum=${timeQuantum}`,
                 processedProcesses,
                 {
                     headers: {

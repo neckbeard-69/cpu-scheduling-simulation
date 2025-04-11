@@ -200,22 +200,25 @@ export default function Chart({ processes, algorithm, numProcesses }) {
 
                     return (
                         <>
-                            <div
-                                className="font-bold text-lg"
-                                style={{
-                                    width: burstWidth,
-                                    backgroundColor,
-                                    color,
-                                }}
-                                data-start-time={
-                                    index === 0 && item["start-time"] !== 0
-                                        ? item["start-time"]
-                                        : ""
-                                }
-                                data-finish-time={item["finish-time"]}
-                            >
-                                <span>{item["process-name"]}</span>
-                            </div>
+                            {item["start-time"] - item["finish-time"] !== 0 &&
+                                <div
+                                    className="font-bold text-lg"
+                                    style={{
+                                        width: burstWidth,
+                                        backgroundColor,
+                                        color,
+                                        minWidth: "fit-content",
+                                    }}
+                                    data-start-time={
+                                        index === 0 && item["start-time"] !== 0
+                                            ? item["start-time"]
+                                            : ""
+                                    }
+                                    data-finish-time={item["finish-time"]}
+                                >
+                                    <span>{item["process-name"]}</span>
+                                </div>
+                            }
                             {waitingWidth !== "0%" && (
                                 <div
                                     className="bg-black/10 font-semibold"
