@@ -19,7 +19,6 @@ func RoundRobin(processes *[]models.RoundRobin, timeQuantum int) []models.RoundR
 	for i := range *processes {
 		(*processes)[i].RemainingTime = (*processes)[i].BurstTime
 	}
-
 	currentTime := 0
 	var executions []models.RoundRobin
 
@@ -72,7 +71,6 @@ func RoundRobin(processes *[]models.RoundRobin, timeQuantum int) []models.RoundR
 			}
 		}
 
-		// If the process is not finished, add it back to the end of the queue
 		if currentProcess.RemainingTime > 0 {
 			queue = append(queue, currentProcess)
 			log.Printf("Process %s is not finished. Moving to end of queue", currentProcess.ProcessName)
@@ -81,7 +79,6 @@ func RoundRobin(processes *[]models.RoundRobin, timeQuantum int) []models.RoundR
 		}
 	}
 
-	// Calculate waiting and turnaround times after all processes are finished
 	for i := range executions {
 		process := &executions[i]
 		process.TurnaroundTime = process.FinishTime - process.ArrivalTime

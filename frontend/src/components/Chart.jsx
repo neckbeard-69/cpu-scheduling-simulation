@@ -9,9 +9,7 @@ import {
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
@@ -98,20 +96,19 @@ export default function Chart({ processes, algorithm, numProcesses }) {
     return (
         <>
             <div className="flex gap-5 w-fit mx-auto items-center">
-                <Button onClick={openDialog} className="font-semibold text-base max-w-fit mx-auto" >
+                <Button onClick={openDialog} className="font-semibold text-base max-w-fit mx-auto">
                     Show Info
                 </Button>
-                <Button disabled={isBlackWhite} onClick={() => setChangeColors((prev) => !prev)} className="font-semibold text-base max-w-fit mx-auto" variant="outline">
+                <Button disabled={isBlackWhite} onClick={() => setChangeColors((prev) => !prev)} className="font-semibold
+            text-base max-w-fit mx-auto" variant="outline">
                     Change chart colors
                 </Button>
                 <HoverCard>
                     <div className="items-top flex space-x-2">
                         <Checkbox id="black-white" onCheckedChange={setIsBlackWhite} />
                         <div className="grid gap-1.5 leading-none">
-                            <label
-                                htmlFor="black-white"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
+                            <label htmlFor="black-white"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                 Monochrome
                             </label>
                         </div>
@@ -127,7 +124,7 @@ export default function Chart({ processes, algorithm, numProcesses }) {
                         </p>
                     </HoverCardContent>
                 </HoverCard>
-            </div >
+            </div>
             <dialog ref={modalRef} className="w-auto m-4 rounded-lg p-4">
                 <Table className='text-center text-lg'>
                     <TableHeader>
@@ -143,7 +140,7 @@ export default function Chart({ processes, algorithm, numProcesses }) {
                             .filter((process, index) => lastOccurrences[process["process-name"]] === index) // Filter to show only the last occurrence
                             .map((process) => (
                                 <TableRow key={process["process-name"]}>
-                                    <TableCell >{process["process-name"]}</TableCell>
+                                    <TableCell>{process["process-name"]}</TableCell>
                                     <TableCell>{process["arrival-time"]}</TableCell>
                                     <TableCell>{process["burst-time"]}</TableCell>
                                     <TableCell> {algorithm !== "sjf-preemtive" ? process["start-time"] : ""}</TableCell>
@@ -156,31 +153,29 @@ export default function Chart({ processes, algorithm, numProcesses }) {
                             ))}
                         <TableRow>
                             <TableCell colSpan="2"></TableCell>
-                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "burst", numProcesses)}</TableCell>
+                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes
+                                .filter((process, index) => lastOccurrences[process["process-name"]] === index), "burst",
+                                numProcesses)}</TableCell>
                             <TableCell colSpan="2"></TableCell>
-                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "wait", numProcesses)}</TableCell>
-                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes, "turnaround", numProcesses)}</TableCell>
+                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes
+                                .filter((process, index) => lastOccurrences[process["process-name"]] === index), "wait",
+                                numProcesses)}</TableCell>
+                            <TableCell style={{ fontWeight: 600 }}>Avg: {calcAvg(processes
+                                .filter((process, index) => lastOccurrences[process["process-name"]] === index), "turnaround",
+                                numProcesses)}
+                            </TableCell>
                             {algorithm.includes("priority") &&
                                 <TableCell></TableCell>}
                         </TableRow>
                     </TableBody>
                 </Table>
-                <Button
-                    variant='destructive'
-                    onClick={closeDialog}
-                    className="font-semibold text-base"
-                >
+                <Button variant='destructive' onClick={closeDialog} className="font-semibold text-base">
                     Close
                 </Button>
             </dialog>
             <div className="chart">
                 {initialWaitingWidth > 0 && (
-                    <div
-                        className="bg-black/10 font-semibold"
-                        style={{
-                            width: `${initialWaitingWidth}%`,
-                        }}
-                    >
+                    <div className="bg-black/10 font-semibold" style={{ width: `${initialWaitingWidth}%`, }}>
                         <span>Waiting</span>
                     </div>
                 )}
@@ -200,33 +195,16 @@ export default function Chart({ processes, algorithm, numProcesses }) {
 
                     return (
                         <>
-                            <div
-                                className="font-bold text-lg"
-                                style={{
-                                    width: burstWidth,
-                                    backgroundColor,
-                                    color,
-                                    minWidth: "fit-content",
-                                }}
-                                data-start-time={
-                                    index === 0 && item["start-time"] !== 0
-                                        ? item["start-time"]
-                                        : ""
-                                }
-                                data-finish-time={item["finish-time"]}
-                            >
+                            <div className="font-bold text-lg" style={{
+                                width: burstWidth, backgroundColor, color,
+                                minWidth: "fit-content",
+                            }} data-start-time={index === 0 && item["start-time"] !== 0 ? item["start-time"]
+                                : ""} data-finish-time={item["finish-time"]}>
                                 <span>{item["process-name"]}</span>
                             </div>
                             {waitingWidth !== "0%" && (
-                                <div
-                                    className="bg-black/10 font-semibold"
-                                    style={{
-                                        width: waitingWidth,
-                                    }}
-                                    data-finish-time={
-                                        processes[index + 1]["start-time"]
-                                    }
-                                >
+                                <div className="bg-black/10 font-semibold" style={{ width: waitingWidth, }} data-finish-time={
+                                    processes[index + 1]["start-time"]}>
                                     <span>Waiting</span>
                                 </div>
                             )}
